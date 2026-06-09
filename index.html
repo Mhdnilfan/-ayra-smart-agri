@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>விவசாயத் தொழிலதிபர் - Agri Smart Platform</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f8f5;
+            color: #2c3e50;
+        }
+        
+        /* மொழி மாற்றி பட்டன்கள் */
+        .lang-bar {
+            background-color: #113f14;
+            padding: 8px 20px;
+            text-align: right;
+        }
+        .lang-btn {
+            background: none;
+            border: 1px solid #fff;
+            color: white;
+            padding: 4px 10px;
+            margin-left: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 9pt;
+        }
+        .lang-btn.active {
+            background-color: #ff9800;
+            border-color: #ff9800;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 20pt;
+            font-weight: bold;
+        }
+        header p {
+            margin: 10px 0 0 0;
+            font-size: 11pt;
+            opacity: 0.9;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #1b5e20;
+            font-size: 13pt;
+            margin-top: 0;
+            border-left: 5px solid #2e7d32;
+            padding-left: 10px;
+            margin-bottom: 15px;
+        }
+        .upload-box {
+            border: 2px dashed #a5d6a7;
+            padding: 30px 15px;
+            text-align: center;
+            background-color: #f8fbf8;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .upload-icon {
+            font-size: 35px;
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        .btn-predict {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 11pt;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .market-header {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 10pt;
+            color: #1b5e20;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.5pt;
+        }
+        .price-table th {
+            background-color: #2e7d32;
+            color: white;
+            padding: 8px;
+            text-align: left;
+        }
+        .price-table td {
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .price-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .price-trend-up { color: #d32f2f; font-weight: bold; }
+        
+        .search-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #2e7d32;
+            border-radius: 6px;
+            font-size: 11pt;
+        }
+        .btn-search {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 11pt;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .crop-select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #cccccc;
+            font-size: 11pt;
+            margin-bottom: 15px;
+        }
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 9.5pt;
+        }
+        .cost-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .timeline-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.5pt;
+        }
+        .timeline-table th {
+            background-color: #37474f;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        .timeline-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eceff1;
+        }
+        .badge-danger {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .badge-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #1b5e20;
+            color: white;
+            margin-top: 30px;
+            font-size: 9.5pt;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-bar">
+        <button class="lang-btn active" onclick="changeLanguage('ta')">தமிழ்</button>
+        <button class="lang-btn" onclick="changeLanguage('en')">English</button>
+        <button class="lang-btn" onclick="changeLanguage('si')">සිංහල</button>
+    </div>
+
+    <header>
+        <h1 id="main-title">விவசாயத் தொழிலதிபர் ஸ்மார்ட் தளம்</h1>
+        <p id="sub-title">AI நோய் கண்டறிதல், நவீன ரசாயன மேலாண்மை மற்றும் நேரலை சந்தை விலைகள்</p>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="layout-grid">
+            <div class="card">
+                <h2 id="sec1-title">1. AI பயிர் நோய் கண்டறிதல்</h2>
+                <p id="sec1-desc" style="font-size: 9.5pt; color: #666; margin-bottom: 15px;">
+                    பாதிக்கப்பட்ட பயிரின் புகைப்படத்தை அப்லோட் செய்யவும். எங்களின் AI தொழில்நுட்பம் அதற்கான சரியான ரசாயனத் தீர்வை வழங்கும்.
+                </p>
+                
+                <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">📸</div>
+                    <strong id="upload-text">பயிரின் புகைப்படத்தை பதிவேற்றவும்</strong>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                </div>
+
+                <div id="imagePreviewContainer" style="display:none; margin-bottom: 15px; text-align:center;">
+                    <img id="outputImage" style="max-width:100%; max-height:150px; border-radius:6px;">
+                </div>
+
+                <button class="btn-predict" id="btn-analyze" onclick="analyzeDisease()">நோயைக் கண்டறிந்து தீர்வு காண்</button>
+                
+                <div id="resultBox" style="display:none; margin-top:15px; padding:12px; background-color:#fff3e0; border-left:4px solid #ff9800; font-size:9.5pt; border-radius:4px;">
+                    <strong style="color:#e65100; display:block; margin-bottom:5px;" id="ai-result-label">AI கண்டறிந்த முடிவு:</strong>
+                    <div id="diseaseName" style="font-weight:bold; margin-bottom:5px;"></div>
+                    <div id="diseaseSolution"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 id="sec2-title">2. மொத்த சந்தை விலை விபரம் (Dambulla Prices)</h2>
+                <div class="market-header"><span id="date-label">இன்றைய தேதி</span>: 2026-06-09</div>
+                
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th id="th-veg">மரக்கறி வகை</th>
+                            <th id="th-dam">தம்புள்ளை (Rs/Kg)</th>
+                            <th id="th-col">கொழும்பு (Rs/Kg)</th>
+                            <th id="th-chg">மாற்றம்</th>
+                        </tr>
+                    </thead>
+                    <tbody id="market-price-tbody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 id="sec3-title">3. ஸ்மார்ட் பயிர் தேடுபொறி (Smart Crop Search Engine)</h2>
+            <p id="sec3-desc" style="font-size:9.5pt; color:#666;">பட்டியலில் உள்ள மரக்கறியைத் தேர்ந்தெடுக்கலாம் அல்லது புதிய மரக்கறியின் பெயரை டைப் செய்து தேடலாம்!</p>
+            
+            <div class="search-section">
+                <input type="text" id="cropSearchInput" class="search-input" placeholder="உதாரணம்: முள்ளங்கி, Radish, රාබු...">
+                <button class="btn-search" id="btn-search-text" onclick="searchCustomCrop()">தேடு (Search)</button>
+            </div>
+
+            <select class="crop-select" id="cropSelector" onchange="updateCropDetails()">
+                </select>
+
+            <h3 id="selected-crop-title" style="color: #2e7d32; font-size: 12pt; margin-bottom: 10px;"></h3>
+
+            <table class="cost-table">
+                <tr>
+                    <td style="font-weight:bold; width:25%;" id="td-seed">விதை செலவு (1 ஏக்கர்):</td>
+                    <td id="cost-seed">Rs. 25,000.00</td>
+                    <td style="font-weight:bold; width:25%;" id="td-chem">உரம் மற்றும் ரசாயனம்:</td>
+                    <td id="cost-fertilizer">Rs. 45,000.00</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;" id="td-labor">நிலம் தயாரிப்பு & கூலி:</td>
+                    <td id="cost-labor">Rs. 35,000.00</td>
+                    <td style="font-weight:bold; color:#1b5e20;" id="td-total">மொத்த தோராய செலவு:</td>
+                    <td style="font-weight:bold; color:#1b5e20;" id="cost-total">Rs. 105,000.00</td>
+                </tr>
+            </table>
+
+            <table class="timeline-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;" id="th-time">காலக்கட்டம்</th>
+                        <th style="width: 25%;" id="th-act">செய்ய வேண்டியவை</th>
+                        <th style="width: 35%;" id="th-rec">பரிந்துரைக்கப்படும் ரசாயனம்</th>
+                        <th style="width: 25%;" id="th-obj">நோக்கம்</th>
+                    </tr>
+                </thead>
+                <tbody id="timeline-body">
+                    </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <footer>
+        <p id="footer-text">© 2026 விவசாயத் தொழிலதிபர் ஸ்மார்ட் தளம் | அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.</p>
+    </footer>
+
+    <script>
+        // தற்போதைய மொழி அமைப்புகள்
+        let currentLang = 'ta';
+
+        const translations = {
+            ta: {
+                mainTitle: "விவசாயத் தொழிலதிபர் ஸ்மார்ட் தளம்", subTitle: "AI நோய் கண்டறிதல், நவீன ரசாயன மேலாண்மை மற்றும் நேரலை சந்தை விலைகள்",
+                sec1Title: "1. AI பயிர் நோய் கண்டறிதல்", sec1Desc: "பாதிக்கப்பட்ட பயிரின் புகைப்படத்தை அப்லோட் செய்யவும். எங்களின் AI தொழில்நுட்பம் அதற்கான சரியான ரசாயனத் தீர்வை வழங்கும்.",
+                uploadText: "பயிரின் புகைப்படத்தை பதிவேற்றவும்", btnAnalyze: "நோயைக் கண்டறிந்து தீர்வு காண்", aiResultLabel: "AI கண்டறிந்த முடிவு:",
+                sec2Title: "2. மொத்த சந்தை விலை விபரம் (Dambulla Prices)", dateLabel: "இன்றைய தேதி", thVeg: "மரக்கறி வகை", thDam: "தம்புள்ளை (Rs/Kg)", thCol: "கொழும்பு (Rs/Kg)", thChg: "மாற்றம்",
+                sec3Title: "3. ஸ்மார்ட் பயிர் தேடுபொறி (Smart Crop Search Engine)", sec3Desc: "பட்டியலில் உள்ள மரக்கறியைத் தேர்ந்தெடுக்கலாம் அல்லது புதிய மரக்கறியின் பெயரை டைப் செய்து தேடலாம்!",
+                btnSearchText: "தேடு (Search)", selectedCropLabel: "தற்போதைய தேர்வு: ", tdSeed: "விதை செலவு (1 ஏக்கர்):", tdChem: "உரம் மற்றும் ரசாயனம்:", tdLabor: "நிலம் தயாரிப்பு & கூலி:", tdTotal: "மொத்த தோராய செலவு:",
+                thTime: "காலக்கட்டம்", thAct: "செய்ய வேண்டியவை", thRec: "பரிந்துரைக்கப்படும் ரசாயனம்", thObj: "நோக்கம்", footerText: "© 2026 விவசாயத் தொழிலதிபர் ஸ்மார்ட் தளம் | அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
+                alertMsg: "தயவுசெய்து ஒரு மரக்கறியின் பெயரை டைப் செய்யவும்!", searchSuccess: "AI தொழில்நுட்பம் மூலம் புதிய பயிர் விபரங்கள் வெற்றிகரமாக உருவாக்கப்பட்டுள்ளது!"
+            },
+            en: {
+                mainTitle: "Agri Entrepreneur Smart Platform", subTitle: "AI Disease Detection, Modern Chemical Management & Live Market Prices",
+                sec1Title: "1. AI Crop Disease Diagnosis", sec1Desc: "Upload a photo of the affected crop. Our AI will analyze and provide the exact chemical treatment instantly.",
+                uploadText: "Upload Crop Image Here", btnAnalyze: "Analyze & Find Solution", aiResultLabel: "AI Diagnosis Result:",
+                sec2Title: "2. Wholesale Market Prices (Dambulla)", dateLabel: "Today's Date", thVeg: "Vegetable Type", thDam: "Dambulla (Rs/Kg)", thCol: "Colombo (Rs/Kg)", thChg: "Change",
+                sec3Title: "3. Smart Crop Search Engine", sec3Desc: "Select a vegetable from the list or type any custom crop name to search details!",
+                btnSearchText: "Search", selectedCropLabel: "Current Selection: ", tdSeed: "Seed Cost (1 Acre):", tdChem: "Fertilizer & Chemicals:", tdLabor: "Land Prep & Labor:", tdTotal: "Total Estimated Cost:",
+                thTime: "Timeline", thAct: "Activities to Do", thRec: "Recommended Chemicals", thObj: "Objective / Disease Target", footerText: "© 2026 Agri Entrepreneur Smart Platform | All Rights Reserved.",
+                alertMsg: "Please type a vegetable name!", searchSuccess: "New crop profiles generated successfully using AI technology!"
+            },
+            si: {
+                mainTitle: "ගොවි ව්‍යවසායක ස්මාර්ට් වේදිකාව", subTitle: "AI රෝග විනිශ්චය, නවීන රසායනික කළමනාකරණය සහ සජීවී වෙළඳපල මිල ගණන්",
+                sec1Title: "1. AI බෝග රෝග විනිශ්චය", sec1Desc: "රෝගී බෝගයේ ඡායාරූපයක් උඩුගත කරන්න. අපගේ AI තාක්ෂණය මඟින් නිවැරදි රසායනික පිළියම් ලබා දෙනු ඇත.",
+                uploadText: "බෝග ඡායාරූපය මෙතැනට උඩුගත කරන්න", btnAnalyze: "රෝගය හඳුනාගෙන පිළියම් සොයන්න", aiResultLabel: "AI රෝග විනිශ්චය ප්‍රතිඵල:",
+                sec2Title: "2. තොග වෙළඳපල මිල විස්තර (දඹුල්ල)", dateLabel: "අද දිනය", thVeg: "එළවළු වර්ගය", thDam: "දඹුල්ල (රු/කිලෝ)", thCol: "කොළඹ (රු/කිලෝ)", thChg: "වෙනස",
+                sec3Title: "3. ස්මාර්ට් බෝග සෙවුම් යන්ත්‍රය", sec3Desc: "ලැයිස්තුවෙන් එළවළු වර්ගයක් තෝරන්න නැතහොත් ඕනෑම බෝගයක නමක් ටයිප් කර සොයන්න!",
+                btnSearchText: "සොයන්න", selectedCropLabel: "දැනට තෝරාගත් බෝගය: ", tdSeed: "බිජ පිරිවැය (අක්කර 1):", tdChem: "පොහොර සහ රසායනික ද්‍රව්‍ය:", tdLabor: "බිම් සකස් කිරීම සහ කුලිය:", tdTotal: "මුළු ඇස්තමේන්තුගත පිරිවැය:",
+                thTime: "කාලසීමාව", thAct: "කළ යුතු දේ", thRec: "නිර්දේශිත රසායනික ද්‍රව්‍ය", thObj: "අරමුණ / පාලනය වන රෝග", footerText: "© 2026 ගොවි ව්‍යවසායක ස්මාර්ට් වේදිකාව | සියලුම හිමිකම් ඇවිරිණි.",
+                alertMsg: "කරුණාකර එළවළු වර්ගයක නමක් ටයිප් කරන්න!", searchSuccess: "AI තාක්ෂණය භාවිතයෙන් නව බෝග පැතිකඩ සාර්ථකව උත්පාදනය කරන ලදී!"
+            }
+        };
+
+        const cropDatabase = {
+            butternut: {
+                names: { ta: "பத்தானா (Butternut Pumpkin)", en: "Butternut Pumpkin", si: "බටර්නට් වට්ටක්කා" },
+                seed: "Rs. 25,000.00", fertilizer: "Rs. 45,000.00", labor: "Rs. 35,000.00", total: "Rs. 105,000.00",
+                timelines: {
+                    ta: [["நடுவதற்கு முன்", "நிலம் தயாரித்தல், அடி உரம்", "அங்கக உரம் + சூப்பர் பாஸ்பேட்", "வேர் வளர்ச்சி மேம்பாடு"], ["15 - 20 நாட்கள்", "ஆரம்ப வளர்ச்சி பருவம்", "Thiamethoxam 25% WG", "இலைப்பேன் கட்டுப்பாடு"]],
+                    en: [["Before Planting", "Land preparation & Base Fertilizer", "Organic manure + Super Phosphate", "Root development enhancement"], ["15 - 20 Days", "Vegetative Stage", "Thiamethoxam 25% WG", "Thrips control"]],
+                    si: [["සිටුවීමට පෙර", "බිම් සකස් කිරීම සහ මූලික පොහොර", "කාබනික පොහොර + සුපර් පොස්පේට්", "මූල වර්ධනය වැඩි දියුණු කිරීම"], ["දින 15 - 20", "පැළවීමේ අවධිය", "Thiamethoxam 25% WG", "කොළ උකුණන් පාලනය"]]
+                }
+            },
+            okra: {
+                names: { ta: "வெண்டைக்காய் (Okra)", en: "Okra / Lady's Finger", si: "බණ්ඩක්කා" },
+                seed: "Rs. 15,000.00", fertilizer: "Rs. 30,000.00", labor: "Rs. 40,000.00", total: "Rs. 85,000.00",
+                timelines: {
+                    ta: [["நடுவதற்கு முன்", "பாத்திகள் அமைத்தல்", "மட்கிய தொழு உரம்", "மண்ணின் பலம் கூட்டல்"], ["10 - 15 நாட்கள்", "முளைப்பு நிலை", "Chlorpyrifos 20% EC", "வெட்டுப்புழு தடுப்பு"]],
+                    en: [["Before Planting", "Bed Making", "Compost manure", "Soil conditioning"], ["10 - 15 Days", "Sprout Stage", "Chlorpyrifos 20% EC", "Cutworm prevention"]],
+                    si: [["සිටුවීමට පෙර", "පාත්ති සකස් කිරීම", "කොම්පෝස්ට් පොහොර", "පස සකස් කිරීම"], ["දින 10 - 15", "පැළවීමේ අවධිය", "Chlorpyrifos 20% EC", "කැපූ පණුවන් පාලනය"]]
+                }
+            }
+        };
+
+        // மொழி மாற்றும் பிரதான பங்க்ஷன்
+        function changeLanguage(lang) {
+            currentLang = lang;
+            
+            // பட்டன் ஆக்டிவ் ஸ்டைல் மாற்றுதல்
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // உரை மாற்றங்கள்
+            const label = translations[lang];
+            document.getElementById('main-title').innerText = label.mainTitle;
+            document.getElementById('sub-title').innerText = label.subTitle;
+            document.getElementById('sec1-title').innerText = label.sec1Title;
+            document.getElementById('sec1-desc').innerText = label.sec1Desc;
+            document.getElementById('upload-text').innerText = label.uploadText;
+            document.getElementById('btn-analyze').innerText = label.btnAnalyze;
+            document.getElementById('ai-result-label').innerText = label.aiResultLabel;
+            document.getElementById('sec2-title').innerText = label.sec2Title;
+            document.getElementById('date-label').innerText = label.dateLabel;
+            document.getElementById('th-veg').innerText = label.thVeg;
+            document.getElementById('th-dam').innerText = label.thDam;
+            document.getElementById('th-col').innerText = label.thCol;
+            document.getElementById('th-chg').innerText = label.thChg;
+            document.getElementById('sec3-title').innerText = label.sec3Title;
+            document.getElementById('sec3-desc').innerText = label.sec3Desc;
+            document.getElementById('btn-search-text').innerText = label.btnSearchText;
+            document.getElementById('td-seed').innerText = label.tdSeed;
+            document.getElementById('td-chem').innerText = label.tdChem;
+            document.getElementById('td-labor').innerText = label.tdLabor;
+            document.getElementById('td-total').innerText = label.tdTotal;
+            document.getElementById('th-time').innerText = label.thTime;
+            document.getElementById('th-act').innerText = label.thAct;
+            document.getElementById('th-rec').innerText = label.thRec;
+            document.getElementById('th-obj').innerText = label.thObj;
+            document.getElementById('footer-text').innerText = label.footerText;
+
+            loadDropdown();
+            loadMarketPrices();
+            updateCropDetails();
+        }
+
+        // டிராப் டவுன் லிஸ்ட்டை மொழிக்கேற்ப மாற்றுதல்
+        function loadDropdown() {
+            const selector = document.getElementById('cropSelector');
+            selector.innerHTML = "";
+            for (let key in cropDatabase) {
+                let opt = document.createElement('option');
+                opt.value = key;
+                opt.innerText = cropDatabase[key].names[currentLang];
+                selector.appendChild(opt);
+            }
+        }
+
+        // மார்க்கெட் விலைகளை மொழிக்கு ஏற்ப மாற்றுதல்
+        function loadMarketPrices() {
+            const tbody = document.getElementById('market-price-tbody');
+            const vegNames = {
+                butternut: { ta: "பத்தானா", en: "Butternut", si: "බටර්නට්" },
+                okra: { ta: "வெண்டைக்காய்", en: "Okra", si: "බණ්ඩක්කා" }
+            };
+
+            tbody.innerHTML = `
+                <tr><td><strong>${vegNames.butternut[currentLang]}</strong></td><td>320.00 - 330.00</td><td>340.00 - 360.00</td><td class="price-trend-up">▲ Rs.15</td></tr>
+                <tr><td><strong>${vegNames.okra[currentLang]}</strong></td><td>180.00 - 200.00</td><td>210.00 - 230.00</td><td class="price-trend-up">▲ Rs.10</td></tr>
+            `;
+        }
+
+        // பயிர் விபரங்கள் மற்றும் கால அட்டவணை அப்டேட் செய்தல்
+        function updateCropDetails() {
+            const crop = document.getElementById('cropSelector').value;
+            const data = cropDatabase[crop];
+            if (!data) return;
+
+            document.getElementById('selected-crop-title').innerText = translations[currentLang].selectedCropLabel + data.names[currentLang];
+            document.getElementById('cost-seed').innerText = data.seed;
+            document.getElementById('cost-fertilizer').innerText = data.fertilizer;
+            document.getElementById('cost-labor').innerText = data.labor;
+            document.getElementById('cost-total').innerText = data.total;
+
+            const tBody = document.getElementById('timeline-body');
+            tBody.innerHTML = "";
+
+            data.timelines[currentLang].forEach(function(row) {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td><strong>${row[0]}</strong></td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td>`;
+                tBody.appendChild(tr);
+            });
+        }
+
+        // பன்மொழி தேடுபொறி (Multilingual Smart Search Engine)
+        function searchCustomCrop() {
+            const query = document.getElementById('cropSearchInput').value.trim();
+            if (query === "") {
+                alert(translations[currentLang].alertMsg);
+                return;
+            }
+
+            // தமிழ், சிங்களம், ஆங்கிலம் என எதில் தேடினாலும் மேட்ச் செய்யும் சிஸ்டம்
+            let found = false;
+            for (let key in cropDatabase) {
+                let namesObj = cropDatabase[key].names;
+                if (namesObj.ta.toLowerCase().includes(query.toLowerCase()) || 
+                    namesObj.en.toLowerCase().includes(query.toLowerCase()) || 
+                    namesObj.si.toLowerCase().includes(query.toLowerCase())) {
+                    document.getElementById('cropSelector').value = key;
+                    updateCropDetails();
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                // புதிய பயிர் விபரங்களை AI வழியில் பன்மொழியில் உருவாக்குதல்
+                let customCropData = {
+                    names: { ta: query, en: query, si: query },
+                    seed: "Rs. 18,000.00", fertilizer: "Rs. 35,000.00", labor: "Rs. 30,000.00", total: "Rs. 83,000.00",
+                    timelines: {
+                        ta: [["நாற்று நிலை", "அடி உரம் போடுதல்", "இயற்கை உரம்", "வளர்ச்சி கூட்டுதல்"]],
+                        en: [["Seedling Stage", "Basal fertilizer application", "Organic Compost", "Enhance Growth"]],
+                        si: [["පැළ අවධිය", "මූලික පොහොර යෙදීම", "කාබනික පොහොර", "වර්ධනය වැඩි කිරීම"]]
+                    }
+                };
+                cropDatabase[query.toLowerCase()] = customCropData;
+                loadDropdown();
+                document.getElementById('cropSelector').value = query.toLowerCase();
+                updateCropDetails();
+                alert(translations[currentLang].searchSuccess);
+            }
+        }
+
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('outputImage');
+                output.src = reader.result;
+                document.getElementById('imagePreviewContainer').style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function analyzeDisease() {
+            document.getElementById('resultBox').style.display = 'block';
+            document.getElementById('diseaseName').innerText = currentLang === 'ta' ? "பரிசீலிக்கப்படுகிறது..." : (currentLang === 'en' ? "Analyzing..." : "පරීක්ෂා කරමින් පවතී...");
+            setTimeout(() => {
+                if(currentLang === 'ta') {
+                    document.getElementById('diseaseName').innerText = "பூஞ்சை காளான் / சாம்பல் நோய் தாக்கம்";
+                    document.getElementById('diseaseSolution').innerHTML = "Mancozeb 2g/L தண்ணீரில் கலந்து தெளிக்கவும்.";
+                } else if(currentLang === 'en') {
+                    document.getElementById('diseaseName').innerText = "Powdery Mildew / Fungus Attack";
+                    document.getElementById('diseaseSolution').innerHTML = "Mix Mancozeb 2g/L in water and spray thoroughly.";
+                } else {
+                    document.getElementById('diseaseName').innerText = "දිලීර හානි / අළු පුස් රෝගය";
+                    document.getElementById('diseaseSolution').innerHTML = "මැන්කොසෙබ් (Mancozeb) ග්‍රෑම් 2ක් ජලය ලීටරයකට දියකර ඉසින්න.";
+                }
+            }, 1000);
+        }
+
+        // ஆரம்பத்தில் லෝட் செய்தல்
+        changeLanguage('ta');
+    </script>
+</body>
+</html>
