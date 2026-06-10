@@ -277,6 +277,27 @@
                 </table>
             </div>
         </div>
+<div class="card" style="margin-top: 20px; padding: 20px; border: 1px solid #28a745; border-radius: 8px; background-color: #f9f9f9;">
+    <h3 style="color: #28a745;">🌱 பயிர் நாட்கள் அடிப்படையிலான பராமரிப்பு வழிகாட்டி</h3>
+    <p>உங்கள் பயிரைத் தேர்ந்தெடுத்து, நட்ட நாட்களை உள்ளிட்டு அதற்கான பராமரிப்பு மற்றும் ரசாயன ஆலோசனைகளைப் பெறுங்கள்.</p>
+    
+    <div style="margin-bottom: 15px;">
+        <label for="cropSelect" style="display: block; margin-bottom: 5px; font-weight: bold;">பயிரைத் தேர்ந்தெடுக்கவும்:</label>
+        <select id="cropSelect" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; background-color: white;">
+            <option value="ladiesfinger">வெண்டைக்காய் (Lady's Finger)</option>
+            <option value="butternut">பத்தானா (Butternut Squash/Bathana)</option>
+        </select>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="cropDays" style="display: block; margin-bottom: 5px; font-weight: bold;">நடுகை செய்து எத்தனை நாட்கள் ஆகிறது?:</label>
+        <input type="number" id="cropDays" placeholder="எ.கா: 10" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+    </div>
+
+    <button onclick="checkCropCare()" style="width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">ஆலோசனையைப் பெறு</button>
+
+    <div id="careResult" style="margin-top: 15px; padding: 10px; border-radius: 4px; font-weight: bold; color: #333; line-height: 1.6;"></div>
+</div>
 
         <div class="card">
             <h2 id="sec3-title">3. ஸ்மார்ட் பயிர் தேடுபொறி (Smart Crop Search Engine)</h2>
@@ -543,7 +564,88 @@
         }
 
         // ஆரம்பத்தில் லෝட் செய்தல்
-        changeLanguage('ta');
+        changeLanguage('ta');// தம்புள்ளை முழுமையான விலைப்பட்டியல் (Date: 2026.06.09)
+const dambullaPrices = {
+    "Cabbage (முட்டைக்கோஸ்)": "Rs. 80.00 - 120.00",
+    "Cauliflower (கோலிபிளவர்)": "Rs. 400.00 - 450.00",
+    "Beans (போஞ்சி)": "Rs. 300.00 - 400.00",
+    "Leeks (லீக்ஸ்)": "Rs. 200.00 - 270.00",
+    "Carrot (காரட்)": "Rs. 350.00 - 380.00",
+    "Beetroot (பீட்ரூட்)": "Rs. 250.00 - 270.00",
+    "Tomato (தக்காளி)": "Rs. 450.00 - 550.00",
+    "Raddish (முள்ளங்கி)": "Rs. 80.00 - 100.00",
+    "Cooking Melon (கெக்கிரி)": "Rs. 130.00 - 140.00",
+    "Cucumber (வெள்ளரி)": "Rs. 70.00 - 80.00",
+    "Potatoes (உருளைக்கிழங்கு)": "Rs. 260.00 - 270.00",
+    "Ridge Gourd (பீர்க்கங்காய்)": "Rs. 220.00 - 320.00",
+    "Lady's Fingers (வெண்டைக்காய்)": "Rs. 180.00 - 200.00",
+    "Snake Gourd (புடலங்காய்)": "Rs. 200.00 - 220.00",
+    "Bitter Gourd (பாகற்காய்)": "Rs. 550.00 - 650.00",
+    "Butternut Squash (பத்தானா)": "Rs. 320.00 - 330.00",
+    "Pumpkin (பூசணிக்காய்)": "Rs. 60.00 - 70.00",
+    "Brinjal (கத்தரிக்காய்)": "Rs. 300.00 - 350.00",
+    "Capsicum (மாலுமிளகாய்)": "Rs. 280.00 - 300.00",
+    "Green Chili (பச்சை மிளகாய்)": "Rs. 350.00 - 400.00",
+    "Lime (தேசிப்பழம்)": "Rs. 250.00 - 300.00",
+    "Red Onion Lanka (சின்ன வெங்காயம் - உள்ளூர்)": "Rs. 200.00 - 350.00"
+};
+
+// நாட்களுக்கு ஏற்ப பராமரிப்பு விபரங்கள்
+const cropCareData = {
+    "ladiesfinger": {
+        "10": "🌱 **10 நாட்கள் (முளைப்பு நிலை):** இந்த நேரத்தில் முளைப்பு சீராக இருக்கும். இலைப்புழு மற்றும் சாறு உறிஞ்சும் பூச்சிகள் தாக்காமல் இருக்க லேசான பூச்சிக்கொல்லி அல்லது வேர் ஊட்டம் தேவைப்படலாம். களைகளைக் கட்டுப்படுத்துங்கள்.",
+        "25": "🌿 **25 நாட்கள் (வளர்ச்சி நிலை):** பூக்கள் வைப்பதற்கான ஆரம்பக் காலம். யூரியா அல்லது நைட்ரஜன் உரங்களை இடலாம். சாறு உறிஞ்சும் பூச்சிகள் (Aphids/Thrips) தாக்க வாய்ப்புள்ளது, அதற்குரிய ரசாயனத்தை லேசான அளவில் தெளிக்கவும்."
+    },
+    "butternut": {
+        "10": "🌱 **10 நாட்கள் (நாற்று நிலை):** வேர்கள் பிடிக்கத் தொடங்கும் காலம். தண்டு அழுகல் நோய் வராமல் தடுக்க கவனமாக நீர் பாய்ச்சவும்.",
+        "25": "🌿 **25 நாட்கள் (கொடி படரும் நிலை):** கொடிகள் ஓடத் தொடங்கும். இந்த நேரத்தில் இலைகளில் புள்ளிகள் (Downy/Powdery Mildew) வராமல் தடுக்க தகுந்த பூஞ்சணநாசினியை (Fungicide) தெளிப்பது நல்லது."
+    }
+};
+
+// விலைப்பட்டியலை அப்டேட் செய்யும் பங்க்ஷன்
+function displayMarketPrices() {
+    const tableBody = document.getElementById("market-price-tbody"); 
+    if(tableBody) {
+        tableBody.innerHTML = ""; 
+        for (let veg in dambullaPrices) {
+            let row = `<tr>
+                <td>${veg}</td>
+                <td>${dambullaPrices[veg]}</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        }
+    }
+}
+
+// பயிர் நாட்குறிப்பைச் சோதிக்கும் பங்க்ஷன்
+function checkCropCare() {
+    const crop = document.getElementById("cropSelect").value;
+    const days = document.getElementById("cropDays").value;
+    const resultDiv = document.getElementById("careResult");
+
+    if (!days) {
+        resultDiv.innerHTML = "<span style='color: red;'>❌ தயவுசெய்து நாட்களை உள்ளிடவும்!</span>";
+        return;
+    }
+
+    if (cropCareData[crop] && cropCareData[crop][days]) {
+        resultDiv.style.backgroundColor = "#e2f0d9";
+        resultDiv.style.border = "1px solid #28a745";
+        resultDiv.style.padding = "10px";
+        resultDiv.innerHTML = cropCareData[crop][days];
+    } else {
+        resultDiv.style.backgroundColor = "#fff3cd";
+        resultDiv.style.border = "1px solid #ffc107";
+        resultDiv.style.padding = "10px";
+        resultDiv.innerHTML = "🌱 பயிரின் வளர்ச்சி சீராக உள்ளது. மண்ணின் ஈரப்பதத்தைப் பொறுத்து நீர் பாய்ச்சவும் மற்றும் பூச்சித் தாக்குதல்களைக் கண்காணிக்கவும். <br><small style='color: #666;'>(குறிப்பு: இந்த குறிப்பிட்ட நாட்களுக்கான பிரத்யேக ரசாயன விபரம் தற்சமயம் இணைக்கப்படவில்லை)</small>";
+    }
+}
+
+// பேஜ் லோடானதும் ரன் செய்ய
+displayMarketPrices();
+
     </script>
 </body>
 </html>
